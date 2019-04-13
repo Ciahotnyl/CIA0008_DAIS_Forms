@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,89 @@ namespace CIA0008_ORM.Database.SQLs
         public static String SQL_DELETE_ID = "DELETE FROM Dovolena WHERE ID_dovolene=@ID_dovolene";
         public static String SQL_UPDATE = "UPDATE Dovolena SET ID_zamestnance=@ID_zamestnance, ID_duvodu=@ID_duvodu, Od=@Od, Do=@Do WHERE ID_dovolene=@ID_dovolene";
         public static String SQL_POCET_DOVOLENYCH = "SELECT COUNT(*) FROM Dovolena WHERE ID_dovolene=@ID_dovolene";
+
+        public static int VlozeniNoveDovolene(int ID_zamestnance, DateTime Od, DateTime Do, int ID_duvod, MyDatabase pDb = null)
+        {
+
+            MyDatabase db;
+            if (pDb == null)
+            {
+                db = new MyDatabase();
+                db.Connect();
+            }
+            else
+            {
+                db = (MyDatabase)pDb;
+            }
+            SqlCommand command = db.CreateCommand("VlozeniNoveDovolene");
+            command.CommandType = CommandType.StoredProcedure;
+
+            SqlParameter input = new SqlParameter();
+            input.ParameterName = "@ID_zamestnance";
+            input.DbType = DbType.Int32;
+            input.Value = ID_zamestnance;
+            input.Direction = ParameterDirection.Input;
+            command.Parameters.Add(input);
+
+            SqlParameter input2 = new SqlParameter();
+            input2.ParameterName = "@Od";
+            input2.DbType = DbType.DateTime;
+            input2.Value = Od;
+            input2.Direction = ParameterDirection.Input;
+            command.Parameters.Add(input2);
+
+            SqlParameter input3 = new SqlParameter();
+            input3.ParameterName = "@Do";
+            input3.DbType = DbType.DateTime;
+            input3.Value = Do;
+            input3.Direction = ParameterDirection.Input;
+            command.Parameters.Add(input3);
+
+            SqlParameter input4 = new SqlParameter();
+            input4.ParameterName = "@ID_duvod";
+            input4.DbType = DbType.Int32;
+            input4.Value = ID_duvod;
+            input4.Direction = ParameterDirection.Input;
+            command.Parameters.Add(input4);
+
+            int ret = db.ExecuteNonQuery(command);
+
+            if (pDb == null)
+            {
+                db.Close();
+            }
+            return ret;
+        }
+
+
+        public static Collection<Dovolena> VypisDovolenychZaUrciteObdobi(DateTime Od, DateTime Do, MyDatabase pDb = null)
+        {
+            String SQL_DOVOLENE_ZA_CAS = "SELECT * FROM Dovolena " +
+                "WHERE Od BETWEEN '" + Convert.ToDateTime(Od).ToString("yyyy-MM-dd") + "' and '"+ Convert.ToDateTime(Do).ToString("yyyy-MM-dd") + "'";
+            MyDatabase db;
+            if (pDb == null)
+            {
+                db = new MyDatabase();
+                db.Connect();
+            }
+            else
+            {
+                db = (MyDatabase)pDb;
+            }
+
+            SqlCommand command = db.CreateCommand(SQL_DOVOLENE_ZA_CAS);
+            SqlDataReader reader = db.Select(command);
+
+            Collection<Dovolena> dovolene = Read(reader);
+            reader.Close();
+
+            if (pDb == null)
+            {
+                db.Close();
+            }
+
+            return dovolene;
+        }
 
         public static int Insert(Dovolena dovolena, MyDatabase pDB = null)
         {

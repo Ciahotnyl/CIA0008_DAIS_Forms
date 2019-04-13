@@ -14,10 +14,10 @@ namespace CIA0008_ORM.Database.SQLs
 
         public static String SQL_SELECT_ID = "SELECT * FROM Smena WHERE ID_smeny=@ID_smeny";
         public static String SQL_SELECT_MAX_ID = "SELECT MAX(ID_smeny) FROM Smena";
-        public static String SQL_INSERT = "INSERT INTO Smena VALUES (@Nazev)";
+        public static String SQL_INSERT = "INSERT INTO Smena VALUES (@Popis)";
         public static String SQL_DELETE_ID = "DELETE FROM Smena WHERE ID_smeny=@ID_smeny";
-        public static String SQL_UPDATE = "UPDATE Smena SET Nazev=@Nazev WHERE ID_smeny=@ID_smeny";
-        public static String SQL_POCET_SMENY = "SELECT COUNT(*) FROM Zamestnanec WHERE ID_smeny = @ID_smeny";
+        public static String SQL_UPDATE = "UPDATE Smena SET Popis=@Popis WHERE ID_smeny=@ID_smeny";
+        public static String SQL_POCET_SMENY = "SELECT COUNT(*) FROM SmenaTymu WHERE ID_smeny = @ID_smeny";
 
         public static int Insert(Smena smena, MyDatabase pDB = null)
         {
@@ -220,7 +220,7 @@ namespace CIA0008_ORM.Database.SQLs
         private static void PrepareCommand(SqlCommand command, Smena smena)
         {
             command.Parameters.AddWithValue("@ID_smeny", smena.ID_smeny);
-            command.Parameters.AddWithValue("@Nazev", smena.Nazev);
+            command.Parameters.AddWithValue("@Popis", smena.Popis);
         }
 
         private static Collection<Smena> Read(SqlDataReader reader)
@@ -232,7 +232,7 @@ namespace CIA0008_ORM.Database.SQLs
                 int i = -1;
                 Smena smena = new Smena();
                 smena.ID_smeny = reader.GetInt32(++i);
-                smena.Nazev = reader.GetString(++i);
+                smena.Popis = reader.GetString(++i);
 
                 smeny.Add(smena);
             }

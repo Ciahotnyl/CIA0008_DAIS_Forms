@@ -13,11 +13,41 @@ namespace CIA0008_ORM.Database.SQLs
         public static String SQL_SELECT = "SELECT * FROM poziceZamestnance";
 
         public static String SQL_SELECT_ID = "SELECT * FROM PoziceZamestnance WHERE ID_poziceZamestnance=@ID_poziceZamestnance";
+        public static String SQL_SELECT_ID_ZAMESTNANCE = "SELECT * FROM PoziceZamestnance WHERE ID_zamestnance=@ID_zamestnance";
         public static String SQL_SELECT_MAX_ID = "SELECT MAX(ID_poziceZamestnance) FROM PoziceZamestnance";
         public static String SQL_INSERT = "INSERT INTO PoziceZamestnance VALUES (@ID_zamestnance, @ID_pozice)";
         public static String SQL_DELETE_ID = "DELETE FROM PoziceZamestnance WHERE ID_poziceZamestnance=@ID_poziceZamestnance";
         public static String SQL_UPDATE = "UPDATE PoziceZamestnance SET ID_zamestnance=@ID_zamestnance, ID_pozice=@ID_pozice WHERE ID_poziceZamestnance=@ID_poziceZamestnance";
         public static String SQL_POCET_POZICE_ZAMESTNANCE = "SELECT COUNT(*) FROM PoziceZamestnance WHERE ID_poziceZamestnance=@ID_poziceZamestnance";
+
+        public static Collection<PoziceZamestnance> SeznamPozicZamestnance(int id, MyDatabase pDb = null)
+        {
+            MyDatabase db;
+            if (pDb == null)
+            {
+                db = new MyDatabase();
+                db.Connect();
+            }
+            else
+            {
+                db = (MyDatabase)pDb;
+            }
+
+            SqlCommand command = db.CreateCommand(SQL_SELECT_ID_ZAMESTNANCE);
+            command.Parameters.AddWithValue("@ID_zamestnance", id);
+            SqlDataReader reader = db.Select(command);
+
+            Collection<PoziceZamestnance> poziceZamestnance = Read(reader);
+            reader.Close();
+
+            if (pDb == null)
+            {
+                db.Close();
+            }
+
+            return poziceZamestnance;
+        }
+
 
         public static int Insert(PoziceZamestnance pz, MyDatabase pDB = null)
         {

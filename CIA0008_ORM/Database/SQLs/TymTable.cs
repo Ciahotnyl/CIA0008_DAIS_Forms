@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -16,8 +17,91 @@ namespace CIA0008_ORM.Database.SQLs
         public static String SQL_SELECT_MAX_ID = "SELECT MAX(ID_tym) FROM Tym";
         public static String SQL_INSERT = "INSERT INTO Tym VALUES (@ID_pracoviste, @Nazev, @Min_zamestnancu, @Datum)";
         public static String SQL_DELETE_ID = "DELETE FROM Tym WHERE ID_tym=@ID_tym";
-        public static String SQL_UPDATE = "UPDATE Tym SET ID_pracoviste=@ID_pracoviste, Nazev=@Nazev, Min_zamestnancu=@Min_zamestnancu, Datum=@Datum";
+        public static String SQL_UPDATE = "UPDATE Tym SET ID_pracoviste=@ID_pracoviste, Nazev=@Nazev, Min_zamestnancu=@Min_zamestnancu, Datum=@Datum WHERE ID_tym=@ID_tym";
         public static String SQL_POCET_TYMU = "SELECT COUNT(*) FROM Tym WHERE ID_tym = @ID_tym";
+
+        public static int VytvoreniKopieTymu(int ID_starehoTymu, DateTime Datum, string nazev, int ID_smeny, MyDatabase pDb = null)
+        {
+
+            MyDatabase db;
+            if (pDb == null)
+            {
+                db = new MyDatabase();
+                db.Connect();
+            }
+            else
+            {
+                db = (MyDatabase)pDb;
+            }
+            SqlCommand command = db.CreateCommand("VytvoreniKopieTymu");
+            command.CommandType = CommandType.StoredProcedure;
+
+            SqlParameter input = new SqlParameter();
+            input.ParameterName = "@ID_starehoTymu";
+            input.DbType = DbType.Int32;
+            input.Value = ID_starehoTymu;
+            input.Direction = ParameterDirection.Input;
+            command.Parameters.Add(input);
+
+            SqlParameter input2 = new SqlParameter();
+            input2.ParameterName = "@Datum";
+            input2.DbType = DbType.DateTime;
+            input2.Value = Datum;
+            input2.Direction = ParameterDirection.Input;
+            command.Parameters.Add(input2);
+
+            SqlParameter input3 = new SqlParameter();
+            input3.ParameterName = "@nazev";
+            input3.DbType = DbType.String;
+            input3.Value = nazev;
+            input3.Direction = ParameterDirection.Input;
+            command.Parameters.Add(input3);
+
+            SqlParameter input4 = new SqlParameter();
+            input4.ParameterName = "@ID_smeny";
+            input4.DbType = DbType.Int32;
+            input4.Value = ID_smeny;
+            input4.Direction = ParameterDirection.Input;
+            command.Parameters.Add(input4);
+
+            int ret = db.ExecuteNonQuery(command);
+
+            if (pDb == null)
+            {
+                db.Close();
+            }
+            return ret;
+        }
+
+        public static Collection<Tym> VypisTymuZaUrciteObdobi(DateTime Od, DateTime Do, MyDatabase pDb = null)
+        {
+            String SQL_DOVOLENE_ZA_CAS = "SELECT * FROM Tym " +
+                "WHERE Datum BETWEEN '" + Convert.ToDateTime(Od).ToString("yyyy-MM-dd") + "' and '" + Convert.ToDateTime(Do).ToString("yyyy-MM-dd") + "'";
+            MyDatabase db;
+            if (pDb == null)
+            {
+                db = new MyDatabase();
+                db.Connect();
+            }
+            else
+            {
+                db = (MyDatabase)pDb;
+            }
+
+            SqlCommand command = db.CreateCommand(SQL_DOVOLENE_ZA_CAS);
+            SqlDataReader reader = db.Select(command);
+
+            Collection<Tym> tymy = Read(reader);
+            reader.Close();
+
+            if (pDb == null)
+            {
+                db.Close();
+            }
+
+            return tymy;
+        }
+
 
         public static int Insert(Tym tym, MyDatabase pDB = null)
         {
@@ -221,7 +305,7 @@ namespace CIA0008_ORM.Database.SQLs
         {
             command.Parameters.AddWithValue("@ID_tym", tym.ID_tym);
             command.Parameters.AddWithValue("@ID_pracoviste", tym.ID_pracoviste);
-            command.Parameters.AddWithValue("@Nazev", tym.ID_pracoviste);
+            command.Parameters.AddWithValue("@Nazev", tym.Nazev);
             command.Parameters.AddWithValue("@Min_zamestnancu", tym.Min_zamestnancu);
             command.Parameters.AddWithValue("@Datum", Convert.ToDateTime(tym.Datum).ToString("yyyy-MM-dd"));
         }

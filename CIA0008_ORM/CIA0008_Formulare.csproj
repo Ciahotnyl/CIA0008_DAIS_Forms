@@ -35,6 +35,8 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -49,6 +51,7 @@
     <Compile Include="Database\PoziceZamestnance.cs" />
     <Compile Include="Database\Pracoviste.cs" />
     <Compile Include="Database\Smena.cs" />
+    <Compile Include="Database\SmenaTymu.cs" />
     <Compile Include="Database\SQLs\DovolenaTable.cs" />
     <Compile Include="Database\SQLs\DuvodTable.cs" />
     <Compile Include="Database\SQLs\MyDatabase.cs" />
@@ -56,18 +59,47 @@
     <Compile Include="Database\SQLs\PoziceZamestnanceTable.cs" />
     <Compile Include="Database\SQLs\PracovisteTable.cs" />
     <Compile Include="Database\SQLs\SmenaTable.cs" />
+    <Compile Include="Database\SQLs\SmenaTymuTable.cs" />
     <Compile Include="Database\SQLs\TymTable.cs" />
     <Compile Include="Database\SQLs\TymZamestnanceTable.cs" />
     <Compile Include="Database\SQLs\ZamestnanecTable.cs" />
     <Compile Include="Database\Tym.cs" />
     <Compile Include="Database\TymZamestnance.cs" />
     <Compile Include="Database\Zamestnanec.cs" />
+    <Compile Include="NovyTym.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NovyTym.Designer.cs">
+      <DependentUpon>NovyTym.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PrirazeniZamestnanceDoTymu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PrirazeniZamestnanceDoTymu.Designer.cs">
+      <DependentUpon>PrirazeniZamestnanceDoTymu.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TymyForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TymyForm.Designer.cs">
+      <DependentUpon>TymyForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="Database\App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="NovyTym.resx">
+      <DependentUpon>NovyTym.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrirazeniZamestnanceDoTymu.resx">
+      <DependentUpon>PrirazeniZamestnanceDoTymu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TymyForm.resx">
+      <DependentUpon>TymyForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

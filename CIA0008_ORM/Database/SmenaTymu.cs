@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace CIA0008_ORM.Database
 {
-    class Smena
+    class SmenaTymu
     {
+        public int ID_smenyTymu { get; set; }
         public int ID_smeny { get; set; }
-        public string Popis { get; set; }
+        public int ID_tym { get; set; }
 
         public override string ToString()
         {
-            return ID_smeny + " " + Popis;
+            return ID_smenyTymu + " " + ID_smeny + " " + ID_tym;
         }
     }
 }
